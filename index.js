@@ -2,13 +2,20 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const db = [
-  { title: "test todo 1", completed: false },
-  { title: "test todo 2", completed: false },
-  { title: "test todo 3", completed: true },
-  { title: "test todo 4", completed: false },
-  { title: "test todo 5", completed: false },
-];
+const db = {
+  comments: [
+    { text: "test todo 1", id: 1 },
+    { text: "test todo 2", id: 2 },
+    { text: "test todo 3", id: 3 },
+    { text: "test todo 4", id: 4 },
+    { text: "test todo 5", id: 5 },
+  ],
+  users: [
+    { username: "Zach", password: "1234", id: 1 },
+    { username: "Anna", password: "asdf", id: 2 },
+  ],
+  messages: [{ text: "This movie is great", id: 1 }],
+};
 
 app.use(express.json());
 

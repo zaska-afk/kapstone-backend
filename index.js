@@ -79,28 +79,62 @@ app.post("/users", (req, res) => {
 app.patch("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body);
-  } catch (err) {
-    res.status(400).json(err.message);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
   }
-  res.status(200).json({ user });
 });
 
 //delete users
 app.delete("/users/:id", async (req, res) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  res.status(200).json({ user });
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 // get a user for profile /users/:id
 app.get("/users/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.status(200).json({ user });
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 //get all users list
 app.get("/users", async (req, res) => {
-  const user = await User.find();
-  res.status(200).json({ user });
+  try {
+    const user = await User.find();
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//add movie to liked movies array
+app.post("/users/:id/likedmovies", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id);
+    user.likedMovies.push(req.body);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//adding a movie buddy endpoint
+app.post("/users/:id/moviebuddies", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id);
+    user.movieBuddies.push(req.body);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 // comment schema //////////////////////////////////////////////
@@ -116,54 +150,86 @@ const Comment = mongoose.model("Comments", commentSchema);
 
 //get comments in all /chatrooms/
 app.get("/chatrooms", async (req, res) => {
-  const Comments = await Comment.find();
-  res.status(200).json({ Comments });
+  try {
+    const Comments = await Comment.find();
+    res.status(200).json({ Comments });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 // post a comment in chatrooms
 app.post("/chatrooms", (req, res) => {
-  const Comments = Comment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = Comment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 /////// comedy chatroom /////////////////////////////////
 const ComedyComment = mongoose.model("ComedyComments", commentSchema);
 app.get("/chatrooms/comedy", async (req, res) => {
-  const Comments = await ComedyComment.find();
+  try {
+    const Comments = await ComedyComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in comedy chatrooms
 app.post("/chatrooms/comedy", (req, res) => {
-  const Comments = ComedyComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = ComedyComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 ////////////////////////////////////////////////////////////////
 
 const ScifiComment = mongoose.model("ScifiComments", commentSchema);
 app.get("/chatrooms/scifi", async (req, res) => {
-  const Comments = await ScifiComment.find();
+  try {
+    const Comments = await ScifiComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in scifi chatrooms
 app.post("/chatrooms/scifi", (req, res) => {
-  const Comments = ComedyComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = ScifiComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ///////////////////////////////////////////////////////////////
 
 const ActionComment = mongoose.model("ScifiComments", commentSchema);
 app.get("/chatrooms/action", async (req, res) => {
-  const Comments = await ActionComment.find();
+  try {
+    const Comments = await ActionComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in action chatrooms
 app.post("/chatrooms/action", (req, res) => {
-  const Comments = ActionComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = ActionComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ///////////////////////////////////////////////////////////////
@@ -173,84 +239,132 @@ const DocumentariesComment = mongoose.model(
   commentSchema
 );
 app.get("/chatrooms/documentaries", async (req, res) => {
-  const Comments = await DocumentariesComment.find();
+  try {
+    const Comments = await DocumentariesComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in action chatrooms
 app.post("/chatrooms/documentaries", (req, res) => {
-  const Comments = DocumentariesComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = DocumentariesComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ////////////////////////////////////////////////////////////////
 
 const HorrorComment = mongoose.model("HorrorComments", commentSchema);
 app.get("/chatrooms/horror", async (req, res) => {
-  const Comments = await HorrorComment.find();
+  try {
+    const Comments = await HorrorComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in horror chatrooms
 app.post("/chatrooms/horror", (req, res) => {
-  const Comments = HorrorComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = HorrorComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ////////////////////////////////////////////////////////////////
 
 const KidComment = mongoose.model("KidComments", commentSchema);
 app.get("/chatrooms/kid", async (req, res) => {
-  const Comments = await KidComment.find();
+  try {
+    const Comments = await KidComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in kid chatrooms
 app.post("/chatrooms/kid", (req, res) => {
-  const Comments = KidComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = KidComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ////////////////////////////////////////////////////////////////
 
 const ThrillerComment = mongoose.model("ThrillerComments", commentSchema);
 app.get("/chatrooms/thriller", async (req, res) => {
-  const Comments = await KidComment.find();
+  try {
+    const Comments = await KidComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in thriller chatrooms
 app.post("/chatrooms/thriller", (req, res) => {
-  const Comments = ThrillerComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = ThrillerComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ////////////////////////////////////////////////////////////////
 
 const AnimationComment = mongoose.model("AnimationComments", commentSchema);
 app.get("/chatrooms/animation", async (req, res) => {
-  const Comments = await AnimationComment.find();
+  try {
+    const Comments = await AnimationComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in animation chatrooms
 app.post("/chatrooms/animation", (req, res) => {
-  const Comments = AnimationComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = AnimationComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ///////////////////////////////////////////////////////////////
 
 const UpcomingComment = mongoose.model("UpcomingComments", commentSchema);
 app.get("/chatrooms/upcoming", async (req, res) => {
-  const Comments = await UpcomingComment.find();
+  try {
+    const Comments = await UpcomingComment.find();
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
   res.status(200).json({ Comments });
 });
 
 // post a comment in upcoming chatrooms
 app.post("/chatrooms/upcoming", (req, res) => {
-  const Comments = UpcomingComment.create(req.body);
-  res.status(201).json({ Comments });
+  if (!req.body.username || !req.body.text) {
+    res.status(400).json("username and text required").end();
+  } else {
+    const Comments = UpcomingComment.create(req.body);
+    res.status(201).json({ Comments });
+  }
 });
 
 ////////////////////////////////////////////////////////////////

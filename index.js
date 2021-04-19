@@ -79,40 +79,62 @@ app.post("/users", (req, res) => {
 app.patch("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(400).json(error.message);
   }
-  res.status(200).json({ user });
 });
 
 //delete users
 app.delete("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(400).json(error.message);
   }
-  res.status(200).json({ user });
 });
 
 // get a user for profile /users/:id
 app.get("/users/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(400).json(error.message);
   }
-  res.status(200).json({ user });
 });
 
 //get all users list
 app.get("/users", async (req, res) => {
   try {
     const user = await User.find();
+    res.status(200).json({ user });
   } catch (error) {
     res.status(400).json(error.message);
   }
-  res.status(200).json({ user });
+});
+
+//add movie to liked movies array
+app.post("/users/:id/likedmovies", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id);
+    user.likedMovies.push(req.body);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//adding a movie buddy endpoint
+app.post("/users/:id/moviebuddies", async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id);
+    user.movieBuddies.push(req.body);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
 });
 
 // comment schema //////////////////////////////////////////////
@@ -130,10 +152,10 @@ const Comment = mongoose.model("Comments", commentSchema);
 app.get("/chatrooms", async (req, res) => {
   try {
     const Comments = await Comment.find();
+    res.status(200).json({ Comments });
   } catch (error) {
     res.status(400).json(error.message);
   }
-  res.status(200).json({ Comments });
 });
 
 // post a comment in chatrooms

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = 3000;
 
@@ -21,6 +22,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use(cors());
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -72,6 +74,30 @@ app.post("/users", (req, res) => {
   } else {
     const user = User.create(req.body);
     res.status(201).json({ user });
+  }
+});
+
+app.post("/users/signup", (req, res) => {
+  if (!req.body.username || !req.body.password || !req.body.email) {
+    res.status(400).end();
+  } else {
+    const user = User.create(req.body);
+    res.status(201).json({ user });
+  }
+});
+
+//login endpoint
+app.post("/users/login", async (req, res) => {
+  if (!req.body.username || !req.body.password) {
+    res.status(400).end();
+  } else {
+    try {
+      const user = await User.findOne({ username: req.body.username });
+      console.log(user);
+      res.status(201).send({ user, statusCode: 201 });
+    } catch (error) {
+      res.status(404).end();
+    }
   }
 });
 

@@ -144,9 +144,15 @@ app.get("/users", async (req, res) => {
 //add movie to liked movies array
 app.post("/users/:id/likedmovies", async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id);
-    user.likedMovies.push(req.body);
-    res.status(200).json({ user });
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { likedMovies: req.body },
+      },
+      { safe: true, upsert: true, new: true }
+    );
+    //user.likedMovies.push(req.body);
+    res.status(200).json({ likedMovies: user.likedMovies });
   } catch (error) {
     res.status(400).json(error.message);
   }

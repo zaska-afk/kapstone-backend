@@ -4,11 +4,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = 3000;
+require("dotenv").config();
 
-const mongodb =
-  "mongodb+srv://Zach:mongodbpassword@cluster0.2b1o6.mongodb.net/Kapstone?retryWrites=true&w=majority";
-
-const db = mongodb;
+const db = process.env.MONGOURI;
 
 mongoose
   .connect(db, {
@@ -222,6 +220,15 @@ app.post("/chatrooms/comedy", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/comedy/:id", async (req, res) => {
+  try {
+    const Comments = await ComedyComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
 ////////////////////////////////////////////////////////////////
 
 const ScifiComment = mongoose.model("ScifiComments", commentSchema);
@@ -244,6 +251,14 @@ app.post("/chatrooms/scifi", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/scifi/:id", async (req, res) => {
+  try {
+    const Comments = await ScifiComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ///////////////////////////////////////////////////////////////
 
 const ActionComment = mongoose.model("ActionComments", commentSchema);
@@ -268,10 +283,10 @@ app.post("/chatrooms/action", async (req, res) => {
   }
 });
 
-app.delete("/chatrooms/action", async (req, res) => {
+app.delete("/chatrooms/action/:id", async (req, res) => {
   try {
-    const Comments = await Comment.findByIdAndDelete(req.params.id);
-    res.status(200).json({ user });
+    const Comments = await ActionComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -301,6 +316,16 @@ app.post("/chatrooms/documentaries", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/documentaries/:id", async (req, res) => {
+  try {
+    const Comments = await DocumentariesComment.findByIdAndDelete(
+      req.params.id
+    );
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ////////////////////////////////////////////////////////////////
 
 const HorrorComment = mongoose.model("HorrorComments", commentSchema);
@@ -323,6 +348,14 @@ app.post("/chatrooms/horror", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/horror/:id", async (req, res) => {
+  try {
+    const Comments = await HorrorComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ////////////////////////////////////////////////////////////////
 
 const KidComment = mongoose.model("KidComments", commentSchema);
@@ -345,12 +378,21 @@ app.post("/chatrooms/kid", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/kid/:id", async (req, res) => {
+  try {
+    const Comments = await KidComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
 ////////////////////////////////////////////////////////////////
 
 const ThrillerComment = mongoose.model("ThrillerComments", commentSchema);
 app.get("/chatrooms/thriller", async (req, res) => {
   try {
-    const Comments = await KidComment.find();
+    const Comments = await ThrillerComment.find();
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -364,6 +406,15 @@ app.post("/chatrooms/thriller", (req, res) => {
   } else {
     const Comments = ThrillerComment.create(req.body);
     res.status(201).json({ Comments });
+  }
+});
+
+app.delete("/chatrooms/thriller/:id", async (req, res) => {
+  try {
+    const Comments = await ThrillerComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
   }
 });
 
@@ -389,6 +440,14 @@ app.post("/chatrooms/animation", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/animation/:id", async (req, res) => {
+  try {
+    const Comments = await AnimationComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ///////////////////////////////////////////////////////////////
 
 const UpcomingComment = mongoose.model("UpcomingComments", commentSchema);
@@ -411,6 +470,14 @@ app.post("/chatrooms/upcoming", (req, res) => {
   }
 });
 
+app.delete("/chatrooms/upcoming/:id", async (req, res) => {
+  try {
+    const Comments = await UpcomingComment.findByIdAndDelete(req.params.id);
+    res.status(200).json("Comment deleted " + req.params.id);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ////////////////////////////////////////////////////////////////
 app.get("/", (req, res) => {
   console.log("Get request received");

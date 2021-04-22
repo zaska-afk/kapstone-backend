@@ -144,9 +144,15 @@ app.get("/users", async (req, res) => {
 //add movie to liked movies array
 app.post("/users/:id/likedmovies", async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id);
-    user.likedMovies.push(req.body);
-    res.status(200).json({ user });
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { likedMovies: req.body },
+      },
+      { safe: true, upsert: true, new: true }
+    );
+    //user.likedMovies.push(req.body);
+    res.status(200).json({ user: user });
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -157,6 +163,7 @@ app.post("/users/:id/moviebuddies", async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id);
     user.movieBuddies.push(req.body);
+    user.save();
     res.status(200).json({ user });
   } catch (error) {
     res.status(400).json(error.message);
@@ -214,6 +221,7 @@ app.post("/chatrooms/comedy", (req, res) => {
     res.status(201).json({ Comments });
   }
 });
+
 ////////////////////////////////////////////////////////////////
 
 const ScifiComment = mongoose.model("ScifiComments", commentSchema);
@@ -238,7 +246,7 @@ app.post("/chatrooms/scifi", (req, res) => {
 
 ///////////////////////////////////////////////////////////////
 
-const ActionComment = mongoose.model("ScifiComments", commentSchema);
+const ActionComment = mongoose.model("ActionComments", commentSchema);
 app.get("/chatrooms/action", async (req, res) => {
   try {
     const Comments = await ActionComment.find();
@@ -249,15 +257,25 @@ app.get("/chatrooms/action", async (req, res) => {
 });
 
 // post a comment in action chatrooms
-app.post("/chatrooms/action", (req, res) => {
+app.post("/chatrooms/action", async (req, res) => {
   if (!req.body.username || !req.body.text) {
     res.status(400).json("username and text required").end();
   } else {
-    const Comments = ActionComment.create(req.body);
+    const Comments = await ActionComment.create(req.body);
+    console.log(Comments);
+    Comments.save();
     res.status(201).json({ Comments });
   }
 });
 
+app.delete("/chatrooms/action", async (req, res) => {
+  try {
+    const Comments = await Comment.findByIdAndDelete(req.params.id);
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 ///////////////////////////////////////////////////////////////
 
 const DocumentariesComment = mongoose.model(
